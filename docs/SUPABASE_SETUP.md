@@ -69,15 +69,22 @@ Use letters and digits only. A password containing `@ : / ? # [ ]` has to be
 percent-encoded inside a URI, and getting that wrong produces a confusing
 `password authentication failed` rather than a parse error.
 
-**b. Put it in `DATABASE_URL`.** Keep the host, port and database exactly as
-they are; change only the username and password:
+**b. Put it in `DATABASE_URL`, using the Session pooler.**
 
 ```
-postgresql://folyo_app:THE-PASSWORD@db.<ref>.supabase.co:5432/postgres
+postgresql://folyo_app.<ref>:THE-PASSWORD@aws-N-<region>.pooler.supabase.com:5432/postgres
 ```
 
-On the session pooler the username carries the project ref
-(`folyo_app.<ref>`); on the direct host it is plain `folyo_app`.
+Take the host from **Settings → Database → Connection string → Session
+pooler**, then change the username from `postgres.<ref>` to `folyo_app.<ref>`
+and use the password from step (a). **The pooler username carries the project
+ref**; on a direct connection it would be plain `folyo_app`.
+
+> Use the pooler, not the direct connection. `db.<ref>.supabase.co` publishes
+> **no A record** — it is IPv6-only on the free tier — and was observed
+> refusing connections on 5432 even from a host with working IPv6 egress, while
+> the project itself was healthy over REST. The pooler resolves to an IPv4
+> load balancer and is the supported path for serverless clients anyway.
 
 > **The URI must contain exactly one `@`.** If the password holds one, every
 > tool that splits on the first `@` — including a careless script — will

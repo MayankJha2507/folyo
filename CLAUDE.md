@@ -28,9 +28,12 @@ a real database yet.
 2. **RLS is the boundary; the UI only reflects it.** Hiding something in the
    interface is never the control. Every policy gets a test that asserts
    denial, including a negative control proving the suite would catch a bypass.
-3. **The service-role key bypasses RLS.** It lives in exactly one module
-   (`src/lib/env.server.ts`, used by `src/lib/db/admin/**`). An ESLint
-   `no-restricted-imports` rule and a CI grep enforce this. Do not widen either.
+3. **The service-role key bypasses RLS.** It is read from the environment in
+   exactly one module (`src/lib/env.server.ts`) and may only be *used* by
+   `src/lib/db/admin/**`. Two checks enforce this: an ESLint
+   `no-restricted-imports` rule, and `scripts/check-service-role-fence.sh`,
+   which catches a file reading `process.env` directly where lint cannot. Do
+   not widen the allowlist.
 4. **Scores are deterministic.** Neither Resume Health nor Job Match may take a
    number from an LLM. The model only drafts prose for findings the engine
    already produced, and both reports must render fully with AI unavailable.

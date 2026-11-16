@@ -1,0 +1,50 @@
+{
+  "name": "folyo",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "check": "npm run lint && npm run typecheck && npm run test"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "next": "16.4.6",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "tailwind-merge": "^3.4.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@tailwindcss/turbopack": "4.3.3",
+    "@types/node": "^24",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9.39.0",
+    "eslint-config-next": "16.4.6",
+    "tailwindcss": "4.3.3",
+    "typescript": "^5",
+    "vitest": "^5.1.0"
+  },
+  "overrides": {
+    "@typescript-eslint/types": "8.72.2",
+    "@typescript-eslint/typescript-estree": {
+      ".": "8.72.2",
+      "minimatch": "^11.0.1"
+    },
+    "@typescript-eslint/utils": "8.72.2",
+    "@typescript-eslint/scope-manager": "8.72.2",
+    "@typescript-eslint/visitor-keys": "8.72.2",
+    "@typescript-eslint/parser": "8.72.2",
+    "@typescript-eslint/eslint-plugin": "8.72.2",
+    "@typescript-eslint/type-utils": "8.72.2",
+    "@typescript-eslint/project-service": "8.72.2",
+    "@typescript-eslint/tsconfig-utils": "8.72.2",
+    "typescript-eslint": "8.72.2"
+  }
+}

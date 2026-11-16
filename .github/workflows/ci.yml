@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit tests
+        run: npm run test
+
+      - name: Build
+        run: npm run build
+
+      # The service-role key bypasses RLS, so it must exist in exactly one
+      # module (docs/PLAN.md §4). This guards the fence the ESLint rule cannot
+      # see: a new file reading the key directly from the environment.
+      - name: Service-role key is confined to one module
+        run: |
+          files=$(grep -rl --include='*.ts' --include='*.tsx' \
+            'SUPABASE_SERVICE_ROLE_KEY' src/ || true)
+          count=$(printf '%s' "$files" | grep -c . || true)
+          if [ "$count" -gt 1 ]; then
+            echo "SUPABASE_SERVICE_ROLE_KEY referenced in more than one module:"
+            echo "$files"
+            exit 1
+          fi

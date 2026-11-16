@@ -53,23 +53,35 @@ Tell me when that is done and I will verify from here.
 ## 4. Point `DATABASE_URL` at the application role
 
 `0000_roles.sql` creates `folyo_app`, the role `src/lib/db/txn.ts` connects as.
-It owns no tables and has **NOBYPASSRLS**, so policies apply to it in full —
-this is what stops a privileged connection quietly doing user work
-(`docs/PLAN.md` §4).
+It owns no tables and has **NOBYPASSRLS**, so policies apply to it in full.
 
-Give it a password and use it in `DATABASE_URL` instead of `postgres`:
+This step is not optional. The default `postgres` user **has BYPASSRLS**: on
+that connection every policy in the product is ignored, which `npm run db:check`
+reports as a failure rather than a warning.
+
+**a. Give the role a password.** In the dashboard's SQL Editor:
 
 ```sql
-alter role folyo_app with password 'generate-a-strong-one';
+alter role folyo_app with login password 'pick-a-long-alphanumeric-one';
 ```
 
-Then in `DATABASE_URL`, replace the `postgres.<ref>` username with
-`folyo_app.<ref>` and use that password.
+Use letters and digits only. A password containing `@ : / ? # [ ]` has to be
+percent-encoded inside a URI, and getting that wrong produces a confusing
+`password authentication failed` rather than a parse error.
 
-> If the pooler rejects the custom role, keep the `postgres` user **for now**
-> and say so — the identity tests in M2 assert the connected role is
-> non-privileged and will fail loudly, which is the point. We would then switch
-> to the direct connection string for the transaction path.
+**b. Put it in `DATABASE_URL`.** Keep the host, port and database exactly as
+they are; change only the username and password:
+
+```
+postgresql://folyo_app:THE-PASSWORD@db.<ref>.supabase.co:5432/postgres
+```
+
+On the session pooler the username carries the project ref
+(`folyo_app.<ref>`); on the direct host it is plain `folyo_app`.
+
+> **The URI must contain exactly one `@`.** If the password holds one, every
+> tool that splits on the first `@` — including a careless script — will
+> misread the host. An alphanumeric password avoids the whole class of problem.
 
 ## 5. Verify
 

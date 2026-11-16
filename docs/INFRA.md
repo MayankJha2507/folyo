@@ -3,23 +3,23 @@
 Honest record of what the free tiers do and do not give us, and what must
 change before real institutional data arrives.
 
-## Current blocker: no local Supabase
+## Development database: hosted, not local
 
-**Docker is not installed on this machine**, and the Supabase CLI requires it
-(`supabase start` runs the stack in containers). Installing Docker needs
-administrator rights, so this one needs you.
+Docker is not installed on this machine and the Supabase CLI requires it, so
+**development runs against a free hosted Supabase project** (`folyo-dev`)
+rather than a local stack. Decided 2026-11-16.
 
-Options, in order of preference:
+This is acceptable because development uses **synthetic fixtures only** — no
+real resume data goes into it. The trade-offs we accept:
 
-1. **Install [OrbStack](https://orbstack.dev) (lighter on macOS, free for
-   personal use) or Docker Desktop**, then `npx supabase start`. Fully local,
-   zero cost, no data leaves the machine, and migrations/RLS tests run offline.
-2. **Use a free hosted Supabase project for development.** Acceptable because
-   development uses only synthetic fixtures, but the inactivity pause applies
-   and migrations run against a remote database.
+- the inactivity pause applies (below), so the project may need waking,
+- migrations run against a remote database, so a mistake is not confined to
+  one machine,
+- `npm test` stays offline; only the database suite needs the connection.
 
-Until one is in place: migration SQL and RLS policies can be **written and
-reviewed** but not **executed or tested**, so M2 cannot be signed off.
+Setup steps are in [`SUPABASE_SETUP.md`](SUPABASE_SETUP.md). If Docker is
+installed later, `npx supabase start` gives a local stack with no code change —
+only `.env.local` moves.
 
 ## Supabase Free — limitations to plan around
 

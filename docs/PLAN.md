@@ -474,12 +474,6 @@ All seven were approved as recommended. These are now settled and binding on imp
 | D6 | Template count at M4 | **Four**, more after M11 |
 | D7 | Transactional email | **Resend** free tier, behind a swappable mailer interface |
 
-### Blocked prerequisite (needs you)
+### D8 — development database (decided 2026-11-16)
 
-**Docker is not installed on this machine**, so the Supabase CLI cannot run a local stack (`supabase start` requires it). This is the one M0 acceptance criterion that cannot be met without your action, since installing Docker needs administrator rights.
-
-Options, in order of preference:
-1. Install **OrbStack** (lighter than Docker Desktop on macOS, free for personal use) or **Docker Desktop**, then `supabase start` — fully local, zero cost, no data leaves the machine.
-2. Use a **free hosted Supabase dev project** in the interim. Acceptable because development uses only synthetic fixtures, but it means the inactivity-pause applies (§12) and migrations run against a remote database.
-
-Until one is in place, schema and policy work (M2) can be written and reviewed as migration SQL but not executed or tested. Everything else in M0 proceeds.
+Docker is not installed and the Supabase CLI requires it, so development runs against a **free hosted Supabase project** rather than a local stack. Acceptable because development uses synthetic fixtures only; the inactivity pause (§12) applies and migrations run remotely. Setup: `docs/SUPABASE_SETUP.md`. Switching to local later costs nothing but an `.env.local` change.

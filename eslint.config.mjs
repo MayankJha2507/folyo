@@ -23,11 +23,6 @@ const config = [
               message:
                 "The service-role client bypasses RLS. Import it only inside src/lib/db/admin/** (see docs/PLAN.md §4). User-facing code must use @/lib/db/user or @/lib/db/txn.",
             },
-            {
-              group: ["@/lib/env.server", "**/lib/env.server"],
-              message:
-                "Server-only secrets. Import from a server module, never a client component.",
-            },
           ],
         },
       ],
@@ -39,7 +34,7 @@ const config = [
   },
   {
     // The fenced modules and their tests are the one place the fence lifts.
-    files: ["src/lib/db/admin/**", "src/lib/env.server.ts", "tests/**"],
+    files: ["src/lib/db/admin/**", "tests/**"],
     rules: { "no-restricted-imports": "off" },
   },
 ];

@@ -10,9 +10,12 @@ plan in the same change.
 
 ## Current state
 
-**M0 complete.** Next.js + TypeScript + Tailwind scaffold, design tokens, base
-components, lint/typecheck/test/build all green, CI workflow, import fence.
-No auth, no database, no features yet. **M1 (auth) is next.**
+**M0 complete.** Scaffold, design tokens, base components, CI, import fence.
+
+**M1/M2 in progress.** The three database access paths, the secrets module and
+the first two migrations are written but **not yet executed** — they need the
+hosted Supabase project (`docs/SUPABASE_SETUP.md`). Nothing is verified against
+a real database yet.
 
 ## Non-negotiables
 
@@ -79,8 +82,13 @@ a real Postgres and runs separately.
 
 ## Known environment constraints
 
-- **Docker is not installed**, so `supabase start` cannot run locally. See
-  `docs/INFRA.md`. Until it is, migrations can be written but not executed.
+- **Development uses a hosted Supabase project**, not a local stack (Docker is
+  not installed). See `docs/SUPABASE_SETUP.md`. Synthetic fixtures only.
+- **Migrations are hand-written SQL** in `db/migrations/`, applied in order.
+  `drizzle-kit generate` is deliberately not used: policies and SECURITY
+  DEFINER functions must be reviewed as SQL, not as a generated diff.
+- `npm run db:check` asserts the connected role cannot bypass RLS. Run it after
+  any change to `DATABASE_URL`.
 - `@typescript-eslint/*` is pinned to 8.72.2 via `overrides`: 8.73.0 is tagged
   latest but its tarball is missing from the npm registry. `minimatch` is
   overridden **only** under `typescript-eslint/typescript-estree` — a global
